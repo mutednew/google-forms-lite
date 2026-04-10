@@ -1,0 +1,10 @@
+{
+  "name": "@gfl/server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc"
+  },
+  "packageManager": "pnpm@10.33.0"
+}

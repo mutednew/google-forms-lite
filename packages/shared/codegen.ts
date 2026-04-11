@@ -1,20 +1,16 @@
-import type { CodegenConfig } from "@graphql-codegen/cli"
+import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
-    schema: "../../apps/server/src/schema.graphql",
-    documents: "../../apps/client/src/**/*.graphql",
+    schema: '../../apps/server/src/schema.graphql',
+    documents: '../../apps/client/src/**/*.graphql',
     ignoreNoDocuments: true,
     generates: {
-        "./src/generated.ts": {
+        './src/generated.ts': {
             plugins: [
-                "typescript",
-                "typescript-operations",
-                "typescript-rtk-query",
+                'typescript',
+                'typescript-operations',
+                'typed-document-node',
             ],
-            config: {
-                importBaseApiFrom: "@gfl/client/src/store/api/baseApi",
-                exportHooks: true,
-            },
         },
     },
 }

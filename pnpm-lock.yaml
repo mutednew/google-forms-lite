@@ -20,6 +20,9 @@ importers:
       '@gfl/shared':
         specifier: workspace:*
         version: link:../../packages/shared
+      '@graphql-typed-document-node/core':
+        specifier: ^3.2.0
+        version: 3.2.0(graphql@16.13.2)
       '@reduxjs/toolkit':
         specifier: ^2.11.2
         version: 2.11.2(react-redux@9.2.0(@types/react@19.2.14)(react@19.2.5)(redux@5.0.1))(react@19.2.5)
@@ -96,10 +99,17 @@ importers:
         version: 6.0.2
 
   packages/shared:
+    dependencies:
+      '@graphql-typed-document-node/core':
+        specifier: ^3.2.0
+        version: 3.2.0(graphql@16.13.2)
     devDependencies:
       '@graphql-codegen/cli':
         specifier: ^6.2.1
         version: 6.2.1(@types/node@25.6.0)(graphql@16.13.2)(typescript@6.0.2)
+      '@graphql-codegen/typed-document-node':
+        specifier: ^6.1.7
+        version: 6.1.7(graphql@16.13.2)
       '@graphql-codegen/typescript':
         specifier: ^5.0.9
         version: 5.0.9(graphql@16.13.2)

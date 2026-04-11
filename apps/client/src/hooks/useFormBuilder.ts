@@ -102,7 +102,7 @@ export const useFormBuilder = () => {
                 }))
             }).unwrap();
 
-            navigate(`forms/${result.createForm.id}/fill`);
+            navigate(`/forms/${result.createForm.id}/fill`);
         } catch (e) {
             console.error("Failed to create form", e);
         }

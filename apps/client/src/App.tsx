@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import FormBuilderPage from "./pages/FormBuilderPage";
 import FormFillerPage from "./pages/FormFillerPage";
@@ -12,6 +12,7 @@ const App = () => {
                 <Route path="/forms/new" element={<FormBuilderPage />} />
                 <Route path="/forms/:id/fill" element={<FormFillerPage />} />
                 <Route path="/forms/:id/responses" element={<FormResponsesPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
         </BrowserRouter>
     )

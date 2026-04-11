@@ -22,25 +22,32 @@ export const api = createApi({
     baseQuery: graphqlRequestBaseQuery({
         url: "http://localhost:5000/graphql",
     }),
+    tagTypes: ["Form", "Response"],
+
     endpoints: (build) => ({
         getForms: build.query<GetFormsQuery, void>({
-            query: () => ({ document: GetFormsDocument })
+            query: () => ({ document: GetFormsDocument }),
+            providesTags: ["Form"]
         }),
 
         getForm: build.query<GetFormQuery, GetFormQueryVariables>({
             query: (variables) => ({ document: GetFormDocument, variables }),
+            providesTags: ["Form"]
         }),
 
         createForm: build.mutation<CreateFormMutation, CreateFormMutationVariables>({
-            query: (variables) => ({ document: CreateFormDocument, variables })
+            query: (variables) => ({ document: CreateFormDocument, variables }),
+            invalidatesTags: ["Form"]
         }),
 
         getResponses: build.query<GetResponsesQuery, GetResponsesQueryVariables>({
-            query: (variables) => ({ document: GetResponsesDocument, variables })
+            query: (variables) => ({ document: GetResponsesDocument, variables }),
+            providesTags: ["Response"]
         }),
 
         submitResponse: build.mutation<SubmitResponseMutation, SubmitResponseMutationVariables>({
-            query: (variables) => ({ document: SubmitResponseDocument, variables })
+            query: (variables) => ({ document: SubmitResponseDocument, variables }),
+            invalidatesTags: ["Response"]
         }),
     }),
 });

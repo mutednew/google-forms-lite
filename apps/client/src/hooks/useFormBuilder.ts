@@ -1,10 +1,11 @@
-import type { FormBuilderState, LocalQuestion } from "../types/formBuilder.types";
-import { QuestionType } from "@gfl/shared";
-import { useNavigate } from "react-router-dom";
-import { useCreateFormMutation } from "../store/api/api";
-import { useState } from "react";
+import { useCallback, useState } from "react"
+import type { FormBuilderState, LocalQuestion } from "../types/formBuilder.types"
+import { QuestionType } from "@gfl/shared"
+import { useNavigate } from "react-router-dom"
+import { useCreateFormMutation } from "../store/api/api"
+import { arrayMove } from "@dnd-kit/sortable"
 
-const generateId = () => crypto.randomUUID();
+const generateId = () => crypto.randomUUID()
 
 const createEmptyQuestion = (): LocalQuestion => ({
     id: generateId(),
@@ -12,80 +13,97 @@ const createEmptyQuestion = (): LocalQuestion => ({
     type: QuestionType.Text,
     required: false,
     options: [],
-});
+})
 
 export const useFormBuilder = () => {
-    const navigate = useNavigate();
-    const [createForm, { isLoading }] = useCreateFormMutation();
+    const navigate = useNavigate()
+    const [createForm, { isLoading }] = useCreateFormMutation()
 
-    const [state, setState] = useState<FormBuilderState>({ title: "", description: "", questions: [] });
+    const [state, setState] = useState<FormBuilderState>({
+        title: "",
+        description: "",
+        questions: [],
+    })
 
-    const setTitle = (title: string) =>
-        setState((prev) => ({
-            ...prev, title
-        }));
+    const setTitle = useCallback((title: string) => {
+        setState((prev) => ({ ...prev, title }))
+    }, [])
 
-    const setDescription = (description: string) =>
-        setState((prev) => ({
-            ...prev, description
-        }));
+    const setDescription = useCallback((description: string) => {
+        setState((prev) => ({ ...prev, description }))
+    }, [])
 
-    const addQuestion = () =>
-        setState((prev) => ({
-            ...prev, questions: [...prev.questions, createEmptyQuestion()]
-        }));
-
-    const removeQuestion = (id: string) =>
-        setState((prev) => ({
-            ...prev, questions: prev.questions.filter(q => q.id !== id)
-        }));
-
-    const updateQuestion = (id: string, changes: Partial<LocalQuestion>) =>
+    const addQuestion = useCallback(() => {
         setState((prev) => ({
             ...prev,
-            questions: prev.questions.map((q) =>
-                q.id === id ? { ...q, ...changes } : q
-            )
-        }));
+            questions: [...prev.questions, createEmptyQuestion()],
+        }))
+    }, [])
 
-    const addOption = (questionId: string) =>
+    const removeQuestion = useCallback((id: string) => {
+        setState((prev) => ({
+            ...prev,
+            questions: prev.questions.filter((q) => q.id !== id),
+        }))
+    }, [])
+
+    const updateQuestion = useCallback((id: string, changes: Partial<LocalQuestion>) => {
+        setState((prev) => ({
+            ...prev,
+            questions: prev.questions.map((q) => (q.id === id ? { ...q, ...changes } : q)),
+        }))
+    }, [])
+
+    const reorderQuestions = useCallback((activeId: string, overId: string) => {
+        setState((prev) => {
+            const oldIndex = prev.questions.findIndex((q) => q.id === activeId)
+            const newIndex = prev.questions.findIndex((q) => q.id === overId)
+            return {
+                ...prev,
+                questions: arrayMove(prev.questions, oldIndex, newIndex),
+            }
+        })
+    }, [])
+
+    const addOption = useCallback((questionId: string) => {
         setState((prev) => ({
             ...prev,
             questions: prev.questions.map((q) =>
                 q.id === questionId
                     ? { ...q, options: [...q.options, { id: generateId(), value: "" }] }
-                    : q
+                    : q,
             ),
-        }));
+        }))
+    }, [])
 
-    const updateOption = (questionId: string, optionId: string, value: string) =>
+    const updateOption = useCallback((questionId: string, optionId: string, value: string) => {
         setState((prev) => ({
             ...prev,
             questions: prev.questions.map((q) =>
                 q.id === questionId
                     ? {
-                        ...q,
-                        options: q.options.map((o) =>
-                            o.id === optionId ? { ...o, value } : o
-                        ),
-                    }
-                    : q
+                          ...q,
+                          options: q.options.map((o) => (o.id === optionId ? { ...o, value } : o)),
+                      }
+                    : q,
             ),
-        }));
+        }))
+    }, [])
 
-    const removeOption = (questionId: string, optionId: string) =>
+    const removeOption = useCallback((questionId: string, optionId: string) => {
         setState((prev) => ({
             ...prev,
             questions: prev.questions.map((q) =>
                 q.id === questionId
                     ? { ...q, options: q.options.filter((o) => o.id !== optionId) }
-                    : q
+                    : q,
             ),
-        }));
+        }))
+    }, [])
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         if (!state.title.trim()) {
-            return;
+            return
         }
 
         try {
@@ -96,17 +114,18 @@ export const useFormBuilder = () => {
                     title: q.title,
                     type: q.type,
                     required: q.required,
-                    options: q.options.length > 0
-                        ? q.options.map((o) => ({ value: o.value }))
-                        : undefined
-                }))
-            }).unwrap();
+                    options:
+                        q.options.length > 0
+                            ? q.options.map((o) => ({ value: o.value }))
+                            : undefined,
+                })),
+            }).unwrap()
 
-            navigate(`/forms/${result.createForm.id}/fill`);
+            navigate(`/forms/${result.createForm.id}/fill`)
         } catch (e) {
-            console.error("Failed to create form", e);
+            console.error("Failed to create form:", e)
         }
-    };
+    }, [state, createForm, navigate])
 
     return {
         state,
@@ -116,9 +135,10 @@ export const useFormBuilder = () => {
         addQuestion,
         removeQuestion,
         updateQuestion,
+        reorderQuestions,
         addOption,
         updateOption,
         removeOption,
         handleSubmit,
-    };
+    }
 }

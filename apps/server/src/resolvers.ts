@@ -1,4 +1,4 @@
-import {AnswerInput, db, QuestionInput} from "./store";
+import { AnswerInput, db, QuestionInput } from "./store";
 
 export const resolvers = {
     Query: {

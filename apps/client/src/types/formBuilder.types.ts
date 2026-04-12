@@ -1,4 +1,4 @@
-import { QuestionType } from "@gfl/shared";
+import { QuestionType } from "@gfl/shared"
 
 export interface LocalOption {
     id: string

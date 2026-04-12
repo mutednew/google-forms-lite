@@ -1,21 +1,31 @@
-import { useParams } from "react-router-dom";
-import {useGetFormQuery, useGetResponsesQuery} from "../store/api/api";
+import { useCallback } from "react"
+import { useParams } from "react-router-dom"
+import { useGetFormQuery, useGetResponsesQuery } from "../store/api/api"
 
 export const useFormResponses = () => {
-    const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>()
 
-    const { data: formData, isLoading: isFormLoading } = useGetFormQuery({ id: id! });
-    const { data: responsesData, isLoading: isResponsesLoading } = useGetResponsesQuery({ formId: id! });
+    const { data: formData, isLoading: isFormLoading } = useGetFormQuery({ id: id! })
+    const { data: responsesData, isLoading: isResponsesLoading } = useGetResponsesQuery({
+        formId: id!,
+    })
 
-    const getQuestionTitle = (questionId: string): string => {
-        return formData?.form?.questions.find((q) => q.id === questionId)?.title ?? "Unknown question";
-    };
+    const questions = formData?.form?.questions
 
-    const getOptionValue = (questionId: string, optionId: string): string => {
-        const question = formData?.form?.questions.find((q) => q.id === questionId)
+    const getQuestionTitle = useCallback(
+        (questionId: string): string => {
+            return questions?.find((q) => q.id === questionId)?.title ?? "Unknown question"
+        },
+        [questions],
+    )
 
-        return question?.options?.find((o) => o.id === optionId)?.value ?? optionId;
-    };
+    const getOptionValue = useCallback(
+        (questionId: string, optionId: string): string => {
+            const question = questions?.find((q) => q.id === questionId)
+            return question?.options?.find((o) => o.id === optionId)?.value ?? optionId
+        },
+        [questions],
+    )
 
     return {
         form: formData?.form,
@@ -23,5 +33,5 @@ export const useFormResponses = () => {
         isLoading: isFormLoading || isResponsesLoading,
         getQuestionTitle,
         getOptionValue,
-    };
-};
+    }
+}

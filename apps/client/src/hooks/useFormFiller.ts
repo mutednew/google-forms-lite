@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { useParams } from "react-router-dom"
 import { QuestionType } from "@gfl/shared"
-import { useGetFormQuery, useSubmitResponseMutation } from "../store/api/api";
+import { useGetFormQuery, useSubmitResponseMutation } from "../store/api/api"
 
 export interface AnswerState {
     [questionId: string]: string[]
@@ -16,27 +16,30 @@ export const useFormFiller = () => {
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [submitError, setSubmitError] = useState<string | null>(null)
 
-    const handleTextChange = (questionId: string, value: string) => {
+    const handleTextChange = useCallback((questionId: string, value: string) => {
         setAnswers((prev) => ({ ...prev, [questionId]: [value] }))
-    }
+    }, [])
 
-    const handleSingleChoice = (questionId: string, value: string) => {
+    const handleSingleChoice = useCallback((questionId: string, value: string) => {
         setAnswers((prev) => ({ ...prev, [questionId]: [value] }))
-    }
+    }, [])
 
-    const handleMultipleChoice = (questionId: string, value: string, checked: boolean) => {
-        setAnswers((prev) => {
-            const current = prev[questionId] ?? []
-            return {
-                ...prev,
-                [questionId]: checked
-                    ? [...current, value]
-                    : current.filter((v) => v !== value),
-            }
-        })
-    }
+    const handleMultipleChoice = useCallback(
+        (questionId: string, value: string, checked: boolean) => {
+            setAnswers((prev) => {
+                const current = prev[questionId] ?? []
+                return {
+                    ...prev,
+                    [questionId]: checked
+                        ? [...current, value]
+                        : current.filter((v) => v !== value),
+                }
+            })
+        },
+        [],
+    )
 
-    const validateAnswers = (): boolean => {
+    const isValid = useMemo(() => {
         const form = data?.form
         if (!form) return false
 
@@ -48,10 +51,10 @@ export const useFormFiller = () => {
             }
             return answer.length > 0
         })
-    }
+    }, [data?.form, answers])
 
-    const handleSubmit = async () => {
-        if (!id || !validateAnswers()) return
+    const handleSubmit = useCallback(async () => {
+        if (!id || !isValid) return
 
         setSubmitError(null)
 
@@ -68,7 +71,7 @@ export const useFormFiller = () => {
         } catch (e) {
             setSubmitError("Failed to submit. Please try again.")
         }
-    }
+    }, [id, isValid, answers, submitResponse])
 
     return {
         form: data?.form,
@@ -82,6 +85,6 @@ export const useFormFiller = () => {
         handleSingleChoice,
         handleMultipleChoice,
         handleSubmit,
-        isValid: validateAnswers(),
+        isValid,
     }
 }

@@ -4,10 +4,13 @@
   "scripts": {
     "dev": "concurrently \"pnpm --filter @gfl/server dev\" \"pnpm --filter @gfl/client dev\"",
     "build": "pnpm --filter @gfl/shared build && pnpm --filter @gfl/server build && pnpm --filter @gfl/client build",
-    "codegen": "pnpm --filter @gfl/shared codegen"
+    "codegen": "pnpm --filter @gfl/shared codegen",
+    "format": "prettier --write \"apps/client/src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
+    "prettier": "^3.8.2",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "typescript": "^6.0.2"
   },
   "packageManager": "pnpm@10.33.0"

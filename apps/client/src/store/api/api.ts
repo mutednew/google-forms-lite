@@ -1,4 +1,4 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
+import { createApi } from "@reduxjs/toolkit/query/react"
 import { graphqlRequestBaseQuery } from "@rtk-query/graphql-request-base-query"
 import {
     CreateFormDocument,
@@ -27,30 +27,30 @@ export const api = createApi({
     endpoints: (build) => ({
         getForms: build.query<GetFormsQuery, void>({
             query: () => ({ document: GetFormsDocument }),
-            providesTags: ["Form"]
+            providesTags: ["Form"],
         }),
 
         getForm: build.query<GetFormQuery, GetFormQueryVariables>({
             query: (variables) => ({ document: GetFormDocument, variables }),
-            providesTags: ["Form"]
+            providesTags: ["Form"],
         }),
 
         createForm: build.mutation<CreateFormMutation, CreateFormMutationVariables>({
             query: (variables) => ({ document: CreateFormDocument, variables }),
-            invalidatesTags: ["Form"]
+            invalidatesTags: ["Form"],
         }),
 
         getResponses: build.query<GetResponsesQuery, GetResponsesQueryVariables>({
             query: (variables) => ({ document: GetResponsesDocument, variables }),
-            providesTags: ["Response"]
+            providesTags: ["Response"],
         }),
 
         submitResponse: build.mutation<SubmitResponseMutation, SubmitResponseMutationVariables>({
             query: (variables) => ({ document: SubmitResponseDocument, variables }),
-            invalidatesTags: ["Response"]
+            invalidatesTags: ["Response"],
         }),
     }),
-});
+})
 
 export const {
     useGetFormsQuery,
@@ -58,4 +58,4 @@ export const {
     useCreateFormMutation,
     useGetResponsesQuery,
     useSubmitResponseMutation,
-} = api;
+} = api

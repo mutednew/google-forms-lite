@@ -81,13 +81,16 @@ export const db = {
     getResponsesByFormId: (formId: string): Response[] => responses.filter((r) => r.formId === formId),
 
     submitResponse: (formId: string, answers: AnswerInput[]): Response => {
+        const form = forms.find((f) => f.id === formId)
+        if (!form) throw new Error(`Form with id "${formId}" not found`)
+
         const response: Response = {
             id: randomUUID(),
             formId,
             answers,
             submittedAt: new Date().toISOString(),
         }
-        responses.push(response);
-        return response;
+        responses.push(response)
+        return response
     }
 }

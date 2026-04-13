@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import type { HeaderProps } from "../../types/header.types"
 import { useHeader } from "../../hooks/useHeader"
 import ThemeToggle from "../ui/ThemeToggle"
-import { cn } from "../../lib/cn" // Убедись, что путь к cn.ts правильный
+import { cn } from "../../lib/cn"
 
 const Header = ({ onSave, isSaving, canSave }: HeaderProps) => {
     const { isHome, isFormBuilder } = useHeader()

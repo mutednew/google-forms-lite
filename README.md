@@ -213,7 +213,7 @@ mutation {
 pnpm workspaces were chosen over Nx/Turborepo due to the project scope - a lightweight setup without unnecessary overhead. A single `pnpm-lock.yaml` ensures consistent dependency versions across all packages.
 
 ### GraphQL Codegen with typed-document-node
-Instead of `typescript-rtk-query` plugin (which had compatibility issues with RTK v2 and Apollo Server v5), we use `typed-document-node` to generate typed `DocumentNode` objects in `@gfl/shared`. RTK Query endpoints are defined manually in `apps/client/src/store/api/api.ts`, which gives more explicit control over caching and invalidation.
+Instead of `typescript-rtk-query` plugin (which had compatibility issues with RTK v2 and Apollo Server v5), I use `typed-document-node` to generate typed `DocumentNode` objects in `@gfl/shared`. RTK Query endpoints are defined manually in `apps/client/src/store/api/api.ts`, which gives more explicit control over caching and invalidation.
 
 ### RTK Query cache invalidation
 `tagTypes: ['Form', 'Response']` ensures that after creating a form or submitting a response, the relevant queries are automatically refetched - no manual cache updates needed.
